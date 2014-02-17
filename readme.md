@@ -319,7 +319,7 @@ yet.
 To compile this, we need some sort of driver
 program to load the world, call our function,
 and save the world. Fortunately, we already have
-such a program in `src/step_world.cpp'. Take the
+such a program in `src/step_world.cpp`. Take the
 `main` from that program and paste it in below
 your existing code. Note that it should appear
 outside the namespaces, as `main` goes
