@@ -1348,6 +1348,11 @@ to executing them. Indeed, it may only be the synchronised
 memory copy _after_ the loop that forces the chain of
 kernels and barriers to run at all.
 
+The kernel code itself is identical to that for the previous
+implementation, so you don't need to create a new .cl file. Sometimes
+you can optimise execution purely by modifying the host code,
+and other times tweaks to the kernel code are all that is needed.
+
 A final problem is that our memory buffers were originally
 declared with read-only and write-only flags, but now we
 are violating that requirements. Go back to your buffer
@@ -1409,17 +1414,17 @@ bits.
 ### Kernel code
 
 At the top of the code, read the properties for the current cell into
-a local uint variable. This value will be read once into fast private
+a private uint variable. This value will be read once into fast private
 memory, and then from then on it can be accessed very cheaply.
 For each of the branches, rewrite it to check bit-flags in the
-variable. For example, if your properties variable is called `myProps`,
+variable. For example, if your private properties variable is called `myProps`,
 and you decided bit 3 of the properties indicated whether the cell
 above is an insulator, the first branch could be re-written to:
 
 	// Cell above
 	if(myProps & 0x4) {
 		contrib += outer;
-		acc += outer * world_state[index-(w-1)];
+		acc += outer * world_state[index-w];
 	}
 
 The other neighbours will need to depend on different bits in the properties.
@@ -1429,15 +1434,30 @@ The other neighbours will need to depend on different bits in the properties.
 In the host code, you need to make sure the the correct flags have
 been inserted into the properties buffer. This should only have local
 effect, so we cannot modify `world.properties` directly. Instead
-create a temporary array in host memory (e.g.  `std::vector<uint32_t>` ),
+create a temporary array in host memory:
+	
+	std::vector<uint32_t> packed(w*h, 0);
+
 and fill it with the appropriate bits. This will involve looping over all
-the co-ordinates, collecting the bit-field values relating to the neighbours.
+the co-ordinates, following the following process at each (x,y) co-ordinate:
+
+	packed(x,y) = world.properties(x,y)
+    if cell(x,y) is normal:
+		if packed(x,y-1)(
+			packed(x,y) = packed(x,y) + 4
+		if packed(x,y+1)(
+			packed(x,y) = packed(x,y) + 8
+		# Handle left and right cases
 
 This process takes some time (though it could be paralellised), but we
 don't care too much, as it only happens once for multiple time loops.
+Once the array is prepared, it can be transferred to the
+GPU instead of the properties array.
 
 This got my laptop up to about 2.5x speedup, so faster than the two
-cores in my device can go.
+cores in my device can go. On a machine with a research-level GPU,
+I was seeing 100x speed-up over the original sequential C++ code
+(compiled with optimisations turned on).
 
 Further optimisations
 =====================
@@ -1461,6 +1481,39 @@ it takes around 10 seconds, both using the AMD OpenCL
 implementation. For large numbers of time-steps this
 cost will shrink, but for short-lived programs it is
 a potentially significant cost.
+
+Deliverables
+============
+
+Clean your directory of object files and executables, making sure
+not to delete the .cpp and .cl files. I'd prefer if you left the
+build artefacts (makefiles, projects) in, as it is useful to
+see how you have handled it, but this is not part of the marks.
+
+So you should end up with the following set of files that you have
+created:
+
+- `src/your_login/step_world_v1_lambda.cpp`
+
+- `src/your_login/step_world_v2_function.cpp`
+
+- `src/your_login/step_world_v3_opencl.cpp`
+
+- `src/your_login/step_world_v3_kernel.cl`
+
+- `src/your_login/step_world_v4_double_buffered.cpp`
+
+- `src/your_login/step_world_v5_packed_properties.cl`
+
+- `src/your_login/step_world_v5_kernel.cl`
+
+Each implementation should perform the same step as
+the original step_world. While there may be minor
+numerical differences due to the single-precision arithmetic,
+there should be no major differences in the output over
+time.
+
+Zip up your directory, and submit it via blackboard.
 
 Debugging tips
 ==============
