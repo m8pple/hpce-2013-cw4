@@ -191,7 +191,7 @@ To see anything happen, you'll need to up the time significantly:
 	
 It is getting fairly slow, even at a resolution of 100x100, but in
 practise we'd like to increase resolution 10x in all three dimensions
-(both spatial axes + time), which increases the comput time by
+(both spatial axes + time), which increases the compute time by
 a factor of 1000.
 
 This type of computation is ideal for a GPU, as it maps very
@@ -302,7 +302,7 @@ The resulting code should look something like:
     for(unsigned t=0;t<n;t++){
         for(unsigned y=0;y<h;y++){
             for(unsigned x=0;x<w;x++){
-                inner_xy(x,y);
+                kernel_xy(x,y);
             }  // end of for(x...
         } // end of for(y...
 		
@@ -437,7 +437,7 @@ and:
 
 I used "const" on the world_state parameter to indicate that
 it is never modified inside the kernel. However, the
-converted `buffer` parameter cannot by const, as the kernel
+converted `buffer` parameter cannot be const, as the kernel
 must write to the array to produce output. This process
 helps show which arrays must be copied both to and from
 the GPU, and which only need to be copied one way.
@@ -557,7 +557,7 @@ code you would comment this out or make it optional):
 
     std::cerr<<"Found "<<platforms.size()<<" platforms\n";
 	for(unsigned i=0;i<platforms.size();i++){
-		std::string vendor=platforms[0].getInfo<CL_PLATFORM_VENDOR>();
+		std::string vendor=platforms[i].getInfo<CL_PLATFORM_VENDOR>();
 		std::cerr<<"  Platform "<<i<<" : "<<vendor<<"\n";
 	}
 

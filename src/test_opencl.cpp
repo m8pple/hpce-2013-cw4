@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 		
 		std::cerr<<"Found "<<platforms.size()<<" platforms\n";
 		for(unsigned i=0;i<platforms.size();i++){
-			std::string vendor=platforms[0].getInfo<CL_PLATFORM_VENDOR>();
+			std::string vendor=platforms[i].getInfo<CL_PLATFORM_VENDOR>();
 			std::cerr<<"  Platform "<<i<<" : "<<vendor<<"\n";
 		}
 		
