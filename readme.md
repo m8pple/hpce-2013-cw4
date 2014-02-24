@@ -1582,6 +1582,20 @@ which can either be set in the compiler, or added to source
 files. Thanks to Henry Poulton and Robert Bishop for
 pointing out the problem, and the fix.
 
+### Compiling under MacOS
+
+Tony Liu notes that adding the option:
+
+    -framework OpenCL
+
+to your compilation may help when trying to sort out header
+and linker directories.
+
+### Missing alloca.h
+
+Windows doesn't have a version of <alloca.h>, so if necessary
+just comment it out. Thanks to Henry Poulton.
+
 Debugging tips
 ==============
 
