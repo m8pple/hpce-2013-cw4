@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 		n=atoi(argv[1]);
 	}
 	if(argc>2){
-		alpha=strtof(argv[2],NULL);
+		alpha=(float)strtod(argv[2],NULL);
 	}
 	if(argc>3){
 		if(atoi(argv[3]))

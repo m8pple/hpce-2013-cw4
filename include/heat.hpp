@@ -1,6 +1,9 @@
 #ifndef hpce_heat_hpp
 #define hpce_heat_hpp
 
+// Stop windows redifining min and max
+#define NOMINMAX
+
 #include <vector>
 #include <iostream>
 #include <cstdio>

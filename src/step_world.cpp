@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	bool binary=false;
 	
 	if(argc>1){
-		dt=strtof(argv[1], NULL);
+		dt=(float)strtod(argv[1], NULL);
 	}
 	if(argc>2){
 		n=atoi(argv[2]);
