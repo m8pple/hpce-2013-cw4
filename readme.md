@@ -1313,7 +1313,11 @@ time the data needs to be transferred is:
 
 2. After the very last execution of the kernel.
 
-We can achieve this by moving the write of `buffState` off the top
+Create a new file called `src/your_login/step_world_v4_double_buffered.cpp`,
+based on `src/your_login/step_world_v3_opencl.cpp`, and name the new
+function `hpce::your_login::StepWorldV4DoubleBuffered`.
+
+We can minimise the transfers by moving the write of `buffState` off the top
 of the loop, and the read of `buffBuffer` off the bottom. Note that
 as you move the read over the call to `std::swap`, the target
 of the read should change: instead of reading into `&buffer[0]`, it
@@ -1542,6 +1546,9 @@ created:
 - `src/your_login/step_world_v3_kernel.cl`
 
 - `src/your_login/step_world_v4_double_buffered.cpp`
+
+- (You may have a seperate kernel `src/your_login/step_world_v4_double_buffered.cl`, or
+	you may be using `src/your_login/step_world_v3_kernel.cpp` for both).
 
 - `src/your_login/step_world_v5_packed_properties.cl`
 
