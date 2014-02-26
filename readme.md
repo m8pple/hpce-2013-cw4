@@ -1548,9 +1548,9 @@ created:
 - `src/your_login/step_world_v4_double_buffered.cpp`
 
 - (You may have a seperate kernel `src/your_login/step_world_v4_double_buffered.cl`, or
-	you may be using `src/your_login/step_world_v3_kernel.cpp` for both).
+	you may be using `src/your_login/step_world_v3_kernel.cl` for both).
 
-- `src/your_login/step_world_v5_packed_properties.cl`
+- `src/your_login/step_world_v5_packed_properties.cpp`
 
 - `src/your_login/step_world_v5_kernel.cl`
 
